@@ -7,7 +7,16 @@ from tkinter.filedialog import askopenfilename, askdirectory
 import numpy as np
 import re
 import pickle
+import os
 
+ruta_carpeta = 'C:/Users/USUARIO/Documents/VS/2.0/files'
+
+# Comprobamos si la carpeta no existe antes de crearla
+if not os.path.exists(ruta_carpeta):
+    os.makedirs(ruta_carpeta)
+    print("Carpeta creada exitosamente")
+else:
+    print("La carpeta ya existe")
 
 class App(tk.Frame):
     def __init__(self, master):
@@ -16,14 +25,19 @@ class App(tk.Frame):
 
         self.list_xlsx = []
         self.fold_list = []
-        with open("C:/Users/USUARIO/Documents/VS/1.0/files/directory.pickle", "rb") as file:
-            dir_fin = pickle.load(file)
-            self.fold_list.append(dir_fin)
+        try:
+            with open("C:/Users/USUARIO/Documents/VS/2.0/files/directory.pickle", "rb") as file:
+                dir_fin = pickle.load(file)
+                self.fold_list.append(dir_fin)
+        except FileNotFoundError:
+            print("No hay ninguna carpeta especificada")
+            pass
+        
         self.widgets()
 
     def data_for_ejec(self):
         dir_fold = self.fold_list[-1]
-        with open("C:/Users/USUARIO/Documents/VS/1.0/files/directory.pickle", "wb") as file:
+        with open("C:/Users/USUARIO/Documents/VS/2.0/files/directory.pickle", "wb") as file:
             pickle.dump(dir_fold, file)
         file.close()
 
@@ -114,7 +128,7 @@ class App(tk.Frame):
         }
         df = pd.DataFrame(data)
 
-        writer = pd.ExcelWriter("C:/Users/USUARIO/Documents/VS/1.0/pre_import.xlsx", engine='xlsxwriter')
+        writer = pd.ExcelWriter("C:/Users/USUARIO/Documents/VS/2.0/pre_import.xlsx", engine='xlsxwriter')
         df.to_excel(writer, sheet_name='Hoja1', index=False)
         writer.close()
 
